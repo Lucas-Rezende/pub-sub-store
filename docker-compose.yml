@@ -62,19 +62,19 @@ services:
       q-rabbitmq:
         condition: service_healthy
 
-  report-service:
-    container_name: report-service
-    build:
-      context: .
-      target: report-service
-    restart: unless-stopped
+  report:
+    build: ./services/report
+    depends_on:
+      - q-rabbitmq
+    environment:
+      RABBITMQ_LOGIN: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_HOST: q-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_VHOST: /
     networks:
       - q-rabbitmq-network
-    env_file:
-      - services/report/.env
-    depends_on:
-      q-rabbitmq:
-        condition: service_healthy
+
 
 networks:
   q-rabbitmq-network:
